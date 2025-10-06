@@ -1,0 +1,4 @@
+# Giraffe
+
+A graphing utility.
+
