@@ -1,8 +1,4 @@
-use std::collections::LinkedList;
-
-use evaluator::tree_evaluator::TreeEvaluator;
-
-use crate::evaluator::{ExpressionEvaluator, ExpressionToken};
+use evaluator::{ExpressionEvaluator, ExpressionToken, TreeEvaluator};
 
 mod evaluator;
 

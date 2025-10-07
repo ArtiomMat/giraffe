@@ -1,11 +1,6 @@
-use std::collections::LinkedList;
-
 use super::*;
 
 enum Tree {
-    /// This should not be in the final tree, it is for intermidiete stages of evaluation
-    Tokens(Vec<ExpressionToken>),
-
     Empty,
     Number(f32),
     Add(Box<Tree>, Box<Tree>),
@@ -41,7 +36,6 @@ impl TreeEvaluator {
                 let x_evaluated = Self::evaluate_tree(x);
                 x_evaluated * x_evaluated * x_evaluated
             }
-            Tree::Tokens(_) => unreachable!("Normal tokens are not supposed to be here"),
         }
     }
 
