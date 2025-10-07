@@ -10,6 +10,8 @@ pub enum Operation {
     Subtract,
     Multiply,
     Divide,
+    Power,
+    Root,
 }
 
 #[derive(Debug, Clone)]
