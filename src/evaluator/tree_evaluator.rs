@@ -38,6 +38,15 @@ impl TreeEvaluator {
         }
     }
 
+    fn get_order_of_operation(o: Operation) -> usize {
+        match o {
+            Operation::Add => 0,
+            Operation::Subtract => 0,
+            Operation::Multiply => 1,
+            Operation::Divide => 1,
+        }
+    }
+
     fn find_last_order_operation(tokens: &Vec<ExpressionToken>) -> Option<usize> {
         let mut best_i: Option<usize> = None;
 
@@ -52,7 +61,7 @@ impl TreeEvaluator {
                                 unreachable!()
                             };
 
-                        if (*best_operation as u8) >= (operation as u8) {
+                        if Self::get_order_of_operation(*best_operation) >= Self::get_order_of_operation(operation) {
                             best_i = Some(i);
                         }
                     } else {
