@@ -41,8 +41,8 @@ impl TreeEvaluator {
 
     /// The lower the number is the lower the order of the operation, as in, it
     /// should be performed last.
-    fn get_order_of_operation(o: Operation) -> usize {
-        match o {
+    fn get_order_of_operation(op: Operation) -> usize {
+        match op {
             Operation::Add => 0,
             Operation::Subtract => 0,
             Operation::Multiply => 1,
