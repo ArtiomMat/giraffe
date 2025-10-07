@@ -4,7 +4,7 @@ pub mod tree_evaluator;
 
 /// The operations are ordered from last to operate to first to operate
 #[repr(u8)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Operation {
     Add,
     Subtract,
@@ -14,11 +14,13 @@ pub enum Operation {
     Root,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum ExpressionToken {
     Number(f32),
     Variable(String),
     Operation(Operation),
+    OpenBracket,
+    CloseBracket,
 }
 
 pub trait ExpressionEvaluator {
