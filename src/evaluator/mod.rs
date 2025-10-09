@@ -2,26 +2,7 @@ pub use tree_evaluator::*;
 
 pub mod tree_evaluator;
 
-/// The operations are ordered from last to operate to first to operate
-#[repr(u8)]
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Operation {
-    Add,
-    Subtract,
-    Multiply,
-    Divide,
-    Power,
-    Root,
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub enum ExpressionToken {
-    Number(f32),
-    Variable(String),
-    Operation(Operation),
-    OpenBracket,
-    CloseBracket,
-}
+use crate::tokenizer::ExpressionToken;
 
 pub trait ExpressionEvaluator {
     fn load_tokens(&mut self, tokens: &[ExpressionToken]);

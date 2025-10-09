@@ -41,14 +41,14 @@ impl TreeEvaluator {
 
     /// The lower the number is the lower the order of the operation, as in, it
     /// should be performed last.
-    fn get_order_of_operation(op: Operation) -> usize {
+    fn get_order_of_operation(op: &ExpressionToken) -> Option<usize> {
         match op {
-            Operation::Add => 0,
-            Operation::Subtract => 0,
-            Operation::Multiply => 1,
-            Operation::Divide => 1,
-            Operation::Power => 2,
-            Operation::Root => 2,
+            ExpressionToken::Plus => Some(0),
+            ExpressionToken::Minus => Some(0),
+            ExpressionToken::Star => Some(1),
+            ExpressionToken::Slash => Some(1),
+            ExpressionToken::Caret => Some(2),
+            _ => None,
         }
     }
 
@@ -58,10 +58,11 @@ impl TreeEvaluator {
     /// The tuple returned is made of the last order operation, and its token
     /// index.
     ///
-    /// If some index is returned, it is **guaranteed** to be that of an
-    /// `ExpressionToken::Operation`.
-    fn find_last_order_operation(tokens: &Vec<ExpressionToken>) -> Option<(Operation, usize)> {
-        let mut best: Option<(Operation, usize)> = None;
+    /// If some index is returned, it is **guaranteed** to be that of some kind of operation.
+    fn find_last_order_operation(
+        tokens: &Vec<ExpressionToken>,
+    ) -> Option<(ExpressionToken, usize)> {
+        let mut best: Option<(&ExpressionToken, usize)> = None;
 
         // Used to ignore stuff within brackets, as we rely on external logic to
         // expand them the moment the tokens vector is entirely within brackets.
@@ -70,16 +71,21 @@ impl TreeEvaluator {
         let mut bracket_depth: usize = 0;
 
         for i in 0..tokens.len() {
-            match tokens[i] {
-                ExpressionToken::Operation(op) => {
+            match &tokens[i] {
+                op @ (ExpressionToken::Plus
+                | ExpressionToken::Caret
+                | ExpressionToken::Slash
+                | ExpressionToken::Star
+                | ExpressionToken::Minus) => {
                     // Ignore as long as inside of brackets
                     if bracket_depth != 0 {
                         continue;
                     }
 
-                    if let Some((best_op, _)) = best {
-                        if Self::get_order_of_operation(best_op) >= Self::get_order_of_operation(op)
-                        {
+                    if let Some((ref best_op, _)) = best {
+                        let best_op_order = Self::get_order_of_operation(best_op).unwrap();
+                        let op_order = Self::get_order_of_operation(op).unwrap();
+                        if best_op_order >= op_order {
                             best = Some((op, i));
                         }
                     } else {
@@ -96,7 +102,7 @@ impl TreeEvaluator {
             }
         }
 
-        best
+        best.map(|(op, index)| (op.clone(), index))
     }
 
     fn detokenize(mut tokens: Vec<ExpressionToken>) -> Tree {
@@ -119,22 +125,24 @@ impl TreeEvaluator {
             let right_detokenized = Box::new(Self::detokenize(right_tokens));
 
             match op {
-                Operation::Add => {
+                ExpressionToken::Plus => {
                     return Tree::Add(left_detokenized, right_detokenized);
                 }
-                Operation::Subtract => {
+                ExpressionToken::Minus => {
                     return Tree::Subtract(left_detokenized, right_detokenized);
                 }
-                Operation::Multiply => {
+                ExpressionToken::Star => {
                     return Tree::Multiply(left_detokenized, right_detokenized);
                 }
-                Operation::Divide => {
+                ExpressionToken::Slash => {
                     return Tree::Divide(left_detokenized, right_detokenized);
                 }
-                Operation::Power => {
+                ExpressionToken::Caret => {
                     return Tree::Power(left_detokenized, right_detokenized);
                 }
-                Operation::Root => todo!("Didn't implement Root support yet"),
+                _ => unreachable!(
+                    "An invalid operation token was returned, either forgot to match it or invalid."
+                ),
             }
         } else if tokens.len() == 1 {
             match tokens[0] {
