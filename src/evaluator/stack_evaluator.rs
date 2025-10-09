@@ -1,3 +1,8 @@
+//! The stack evaluator uses the tree the parser makes and takes it
+//! 1 step forward forward, translating it into a set of "actions".
+//!
+//! The resulting evaluator's behaviour resembles that of a stack
+//! reliant program, pushing, operating on, and popping numbers.
 
 enum Action {
     Push(f32),
