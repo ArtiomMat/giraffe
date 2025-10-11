@@ -1,9 +1,9 @@
 use evaluators::{Evaluator, TreeEvaluator};
-use tokenizer::Token;
+use lexer::Token;
 
 mod evaluators;
 mod parser;
-mod tokenizer;
+mod lexer;
 
 fn main() {
     let mut tree = parser::Tree::Empty;

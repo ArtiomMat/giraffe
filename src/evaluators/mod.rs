@@ -2,7 +2,7 @@ pub use tree_evaluator::*;
 
 pub mod tree_evaluator;
 
-use crate::{parser, tokenizer::Token};
+use crate::{parser, lexer::Token};
 
 pub trait Evaluator {
     fn load_tree(&mut self, tree: parser::Tree);

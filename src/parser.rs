@@ -1,6 +1,6 @@
 //! The parser phase translates tokens into a tree.
 
-use crate::tokenizer::Token;
+use crate::lexer::Token;
 
 pub enum Tree {
     Empty,
