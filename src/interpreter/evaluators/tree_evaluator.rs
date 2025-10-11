@@ -1,6 +1,6 @@
 use super::*;
 
-use crate::parser::Tree;
+use super::parser::Tree;
 
 pub struct TreeEvaluator(Tree);
 

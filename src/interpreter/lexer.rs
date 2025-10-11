@@ -25,6 +25,9 @@ enum CharCategory {
     Unknown,
 }
 
+/// bit flags that indicate various properties about the current
+/// token string we have. These help us understand precisely what
+/// to translate the token string into as a full token.
 type TokenTags = u32;
 
 /// It starts with a `0`.
@@ -67,7 +70,6 @@ pub fn tokenize(text: &str) -> Vec<Token> {
     let mut token_tags = 0;
     let mut tokens = Vec::new();
 
-    let mut last_category = CharCategory::Unknown;
     for c in text.chars() {
         // let current_category = get_char_category(c);
 
@@ -96,9 +98,9 @@ pub fn tokenize(text: &str) -> Vec<Token> {
 
         match c {
             'A'..='Z' | 'a'..='z' | '_' => {
-                if last_category != CharCategory::Alphabetic {}
+                // if last_category != CharCategory::Alphabetic {}
 
-                last_category = CharCategory::Alphabetic;
+                // last_category = CharCategory::Alphabetic;
             }
             // ' ' | '\t' => {
             //     if token_string.len() {
