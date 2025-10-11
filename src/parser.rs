@@ -1,6 +1,6 @@
-//! The parser phase translates 
+//! The parser phase translates tokens into a tree.
 
-use crate::tokenizer::ExpressionToken;
+use crate::tokenizer::Token;
 
 pub enum Tree {
     Empty,
@@ -17,13 +17,13 @@ pub enum Tree {
 impl Tree {
     /// The lower the number is the lower the order of the operation, as in, it
     /// should be performed last.
-    fn get_order_of_operation(op: &ExpressionToken) -> Option<usize> {
+    fn get_order_of_operation(op: &Token) -> Option<usize> {
         match op {
-            ExpressionToken::Plus => Some(0),
-            ExpressionToken::Minus => Some(0),
-            ExpressionToken::Star => Some(1),
-            ExpressionToken::Slash => Some(1),
-            ExpressionToken::Caret => Some(2),
+            Token::Plus => Some(0),
+            Token::Minus => Some(0),
+            Token::Star => Some(1),
+            Token::Slash => Some(1),
+            Token::Caret => Some(2),
             _ => None,
         }
     }
@@ -36,9 +36,9 @@ impl Tree {
     ///
     /// If some index is returned, it is **guaranteed** to be that of some kind of operation.
     fn find_last_order_operation(
-        tokens: &Vec<ExpressionToken>,
-    ) -> Option<(ExpressionToken, usize)> {
-        let mut best: Option<(&ExpressionToken, usize)> = None;
+        tokens: &Vec<Token>,
+    ) -> Option<(Token, usize)> {
+        let mut best: Option<(&Token, usize)> = None;
 
         // Used to ignore stuff within brackets, as we rely on external logic to
         // expand them the moment the tokens vector is entirely within brackets.
@@ -48,11 +48,11 @@ impl Tree {
 
         for i in 0..tokens.len() {
             match &tokens[i] {
-                op @ (ExpressionToken::Plus
-                | ExpressionToken::Caret
-                | ExpressionToken::Slash
-                | ExpressionToken::Star
-                | ExpressionToken::Minus) => {
+                op @ (Token::Plus
+                | Token::Caret
+                | Token::Slash
+                | Token::Star
+                | Token::Minus) => {
                     // Ignore as long as inside of brackets
                     if bracket_depth != 0 {
                         continue;
@@ -68,10 +68,10 @@ impl Tree {
                         best = Some((op, i));
                     }
                 }
-                ExpressionToken::OpenBracket => {
+                Token::OpenBracket => {
                     bracket_depth += 1;
                 }
-                ExpressionToken::CloseBracket => {
+                Token::CloseBracket => {
                     bracket_depth = bracket_depth.checked_sub(1).unwrap_or_default();
                 }
                 _ => {}
@@ -81,9 +81,9 @@ impl Tree {
         best.map(|(op, index)| (op.clone(), index))
     }
 
-    fn detokenize(mut tokens: Vec<ExpressionToken>) -> Tree {
-        if tokens[0] == ExpressionToken::OpenBracket
-            && tokens[tokens.len() - 1] == ExpressionToken::CloseBracket
+    fn detokenize(mut tokens: Vec<Token>) -> Tree {
+        if tokens[0] == Token::OpenBracket
+            && tokens[tokens.len() - 1] == Token::CloseBracket
         {
             _ = tokens.remove(0);
             _ = tokens.pop();
@@ -101,19 +101,19 @@ impl Tree {
             let right_detokenized = Box::new(Self::detokenize(right_tokens));
 
             match op {
-                ExpressionToken::Plus => {
+                Token::Plus => {
                     return Tree::Add(left_detokenized, right_detokenized);
                 }
-                ExpressionToken::Minus => {
+                Token::Minus => {
                     return Tree::Subtract(left_detokenized, right_detokenized);
                 }
-                ExpressionToken::Star => {
+                Token::Star => {
                     return Tree::Multiply(left_detokenized, right_detokenized);
                 }
-                ExpressionToken::Slash => {
+                Token::Slash => {
                     return Tree::Divide(left_detokenized, right_detokenized);
                 }
-                ExpressionToken::Caret => {
+                Token::Caret => {
                     return Tree::Power(left_detokenized, right_detokenized);
                 }
                 _ => unreachable!(
@@ -122,7 +122,7 @@ impl Tree {
             }
         } else if tokens.len() == 1 {
             match tokens[0] {
-                ExpressionToken::Number(x) => {
+                Token::Number(x) => {
                     return Tree::Number(x);
                 }
                 _ => todo!("Not supported yet."),
@@ -132,7 +132,7 @@ impl Tree {
         }
     }
 
-    pub fn load_tokens(&mut self, tokens: Vec<ExpressionToken>) {
+    pub fn load_tokens(&mut self, tokens: Vec<Token>) {
         *self = Self::detokenize(tokens);
     }
 

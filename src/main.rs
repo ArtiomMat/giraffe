@@ -1,7 +1,7 @@
-use evaluator::{Evaluator, TreeEvaluator};
-use tokenizer::ExpressionToken;
+use evaluators::{Evaluator, TreeEvaluator};
+use tokenizer::Token;
 
-mod evaluator;
+mod evaluators;
 mod parser;
 mod tokenizer;
 
@@ -12,19 +12,19 @@ fn main() {
     // 1.67 + 3.66 / 2 / 3.66 * 2 + 2 - 3
     // = 1.67
     let tokens = [
-        ExpressionToken::Number(1.67),
-        ExpressionToken::Plus,
-        ExpressionToken::Number(3.66),
-        ExpressionToken::Slash,
-        ExpressionToken::Number(2.0),
-        ExpressionToken::Slash,
-        ExpressionToken::Number(3.66),
-        ExpressionToken::Star,
-        ExpressionToken::Number(2.0),
-        ExpressionToken::Plus,
-        ExpressionToken::Number(2.0),
-        ExpressionToken::Minus,
-        ExpressionToken::Number(3.0),
+        Token::Number(1.67),
+        Token::Plus,
+        Token::Number(3.66),
+        Token::Slash,
+        Token::Number(2.0),
+        Token::Slash,
+        Token::Number(3.66),
+        Token::Star,
+        Token::Number(2.0),
+        Token::Plus,
+        Token::Number(2.0),
+        Token::Minus,
+        Token::Number(3.0),
     ];
 
     tree.load_tokens(tokens.to_vec());
@@ -37,25 +37,25 @@ fn main() {
     // 3 * (1.67 + 3.66) / 2 / 3.66 * 2 + 2 - 3
     // = 5.7377043
     let tokens = [
-        ExpressionToken::Number(3.0),
-        ExpressionToken::Star,
-        ExpressionToken::OpenBracket,
-        ExpressionToken::Number(1.67),
-        ExpressionToken::Plus,
-        ExpressionToken::Number(3.66),
-        ExpressionToken::CloseBracket,
-        ExpressionToken::Slash,
-        ExpressionToken::Number(2.0),
-        ExpressionToken::Slash,
-        ExpressionToken::Number(3.66),
-        ExpressionToken::Star,
-        ExpressionToken::OpenBracket,
-        ExpressionToken::Number(2.0),
-        ExpressionToken::Plus,
-        ExpressionToken::Number(2.0),
-        ExpressionToken::CloseBracket,
-        ExpressionToken::Minus,
-        ExpressionToken::Number(3.0),
+        Token::Number(3.0),
+        Token::Star,
+        Token::OpenBracket,
+        Token::Number(1.67),
+        Token::Plus,
+        Token::Number(3.66),
+        Token::CloseBracket,
+        Token::Slash,
+        Token::Number(2.0),
+        Token::Slash,
+        Token::Number(3.66),
+        Token::Star,
+        Token::OpenBracket,
+        Token::Number(2.0),
+        Token::Plus,
+        Token::Number(2.0),
+        Token::CloseBracket,
+        Token::Minus,
+        Token::Number(3.0),
     ];
 
     let mut tree = parser::Tree::Empty;
