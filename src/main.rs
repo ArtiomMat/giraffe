@@ -3,6 +3,8 @@ use interpreter::lexer::Token;
 use interpreter::parser;
 
 mod interpreter;
+mod renderer;
+mod graph;
 
 fn main() {
     let mut tree = parser::Tree::Empty;
