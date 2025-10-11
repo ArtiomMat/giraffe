@@ -1,6 +1,8 @@
-use super::*;
+//! The parser phase translates 
 
-enum Tree {
+use crate::tokenizer::ExpressionToken;
+
+pub enum Tree {
     Empty,
     Number(f32),
     Add(Box<Tree>, Box<Tree>),
@@ -12,33 +14,7 @@ enum Tree {
     Cube(Box<Tree>),
 }
 
-pub struct TreeEvaluator(Tree);
-
-impl TreeEvaluator {
-    pub fn new() -> Self {
-        Self(Tree::Empty)
-    }
-
-    fn evaluate_tree(tree: &Tree) -> f32 {
-        match tree {
-            Tree::Empty => 0.0,
-            Tree::Number(num) => *num,
-            Tree::Add(a, b) => Self::evaluate_tree(a) + Self::evaluate_tree(b),
-            Tree::Subtract(a, b) => Self::evaluate_tree(a) - Self::evaluate_tree(b),
-            Tree::Multiply(a, b) => Self::evaluate_tree(a) * Self::evaluate_tree(b),
-            Tree::Divide(a, b) => Self::evaluate_tree(a) / Self::evaluate_tree(b),
-            Tree::Power(a, b) => Self::evaluate_tree(a).powf(Self::evaluate_tree(b)),
-            Tree::Square(x) => {
-                let x_evaluated = Self::evaluate_tree(x);
-                x_evaluated * x_evaluated
-            }
-            Tree::Cube(x) => {
-                let x_evaluated = Self::evaluate_tree(x);
-                x_evaluated * x_evaluated * x_evaluated
-            }
-        }
-    }
-
+impl Tree {
     /// The lower the number is the lower the order of the operation, as in, it
     /// should be performed last.
     fn get_order_of_operation(op: &ExpressionToken) -> Option<usize> {
@@ -155,17 +131,10 @@ impl TreeEvaluator {
             panic!("The tokens were more than 1 in length, but they shoudln't.");
         }
     }
-}
 
-impl ExpressionEvaluator for TreeEvaluator {
-    fn load_tokens(&mut self, tokens_arr: &[ExpressionToken]) {
-        let tokens = tokens_arr.to_vec();
-
-        self.0 = Self::detokenize(tokens)
+    pub fn load_tokens(&mut self, tokens: Vec<ExpressionToken>) {
+        *self = Self::detokenize(tokens);
     }
 
-    fn evaluate(&mut self, variables: &[(&str, f32)]) -> f32 {
-        let _ = variables;
-        Self::evaluate_tree(&self.0)
-    }
 }
+

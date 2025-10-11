@@ -1,10 +1,12 @@
-use evaluator::{ExpressionEvaluator, TreeEvaluator};
+use evaluator::{Evaluator, TreeEvaluator};
 use tokenizer::ExpressionToken;
 
 mod evaluator;
+mod parser;
 mod tokenizer;
 
 fn main() {
+    let mut tree = parser::Tree::Empty;
     let mut eval = TreeEvaluator::new();
 
     // 1.67 + 3.66 / 2 / 3.66 * 2 + 2 - 3
@@ -25,7 +27,8 @@ fn main() {
         ExpressionToken::Number(3.0),
     ];
 
-    eval.load_tokens(&tokens);
+    tree.load_tokens(tokens.to_vec());
+    eval.load_tree(tree);
     println!(
         "\n1.67 + 3.66 / 2 / 3.66 * 2 + 2 - 3\n{}\n",
         eval.evaluate(&[])
@@ -55,7 +58,9 @@ fn main() {
         ExpressionToken::Number(3.0),
     ];
 
-    eval.load_tokens(&tokens);
+    let mut tree = parser::Tree::Empty;
+    tree.load_tokens(tokens.to_vec());
+    eval.load_tree(tree);
     println!(
         "3 * (1.67 + 3.66) / 2 / 3.66 * 2 + 2 - 3\n{}\n",
         eval.evaluate(&[])
