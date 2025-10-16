@@ -4,7 +4,7 @@ A graphing utility.
 
 # FIXME
 
-- [x] If there is a `(` token and `)` in start and end respectively, no matter what, it removes them.
+- [ ] If there is a `(` token and `)` in start and end respectively, no matter what, it removes them.
 This can cause stuff like `(1+1)+(1+1)` to effectively become `1+1)+(1+1` which would destroy parsing.
 
 # TODO
